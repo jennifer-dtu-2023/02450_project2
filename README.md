@@ -4,3 +4,9 @@ This repository contains the code we used to create project 2 in DTU's Introduct
 
 The project focuses on applying supervised learning methods to Census data to solve classification and regression problems. It involves statistically evaluating models like linear regression and artificial neural networks using two-level cross-validation, while also comparing them against baseline models to assess their performance.
 
+Project Start Date: 2023-10-03
+
+Authors:
+- Emma Louise Blair (BSc. Electrical Engineering Student)
+- Cheng-Liang Lu (MSc. Human-Centered Artificial Intelligence)
+- Jennifer Fortuny I Zhan (MSc. Bioinformatics and Systems Biology)
