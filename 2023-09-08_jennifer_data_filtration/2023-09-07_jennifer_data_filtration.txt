@@ -1,0 +1,47 @@
+File_name: 2023-09-07_jennifer_data_filtration.txt
+Author: Jennifer Fortuny I Zhan
+Date: Thursday, 2023-09-07
+
+This file breifly explains the steps I took to reduce the raw data from UC Irvine's Census database.
+On Tuesday, 2023-09-05, following group discussion, we decided to limit the scope of our data to the following:
+    • Countries with top 5 or top 10 gdp per capita.
+    • Continuous: age, edu-num, hour-per-week.
+    • Categorical: workclass, occupation.
+    • Binary: income
+
+On Thuesday, I downloaded the files from UC Irvine's (http://archive.ics.uci.edu/dataset/2/adult) and set to reduce the dataset.
+----------------------------------------------------------------------------------------------------------------------------------
+Initial download and verification of the data:
+# After downloading the file, I unzipped it.
+# I used the ls command to see the files present:
+$ ls
+Index           adult.data      adult.names     adult.test      old.adult.names
+
+# I decided to look into the contents of adults.data using head:
+39, State-gov, 77516, Bachelors, 13, Never-married, Adm-clerical, Not-in-family, White, Male, 2174, 0, 40, United-States, <=50K
+50, Self-emp-not-inc, 83311, Bachelors, 13, Married-civ-spouse, Exec-managerial, Husband, White, Male, 0, 0, 13, United-States, <=50K
+38, Private, 215646, HS-grad, 9, Divorced, Handlers-cleaners, Not-in-family, White, Male, 0, 0, 40, United-States, <=50K
+
+# From the result above I decided that adults.data contained the raw data we want to investigate.
+# The raw data was in a csv format.
+# I have uploaded the raw data file, adult.data in this repository.
+
+----------------------------------------------------------------------------------------------------------------------------------
+Filtering criteria one: Countries with top 5 or top 10 gdp per capita.
+
+Step 1: Choosing the countries:
+# I viewed the International Monetary Fund's April 2023 data (https://www.imf.org/external/datamapper/NGDPDPC@WEO/OEMDC/ADVEC/WEOWORLD).
+# I set to view the gdp per capita in descending order, and decided to use the countries with the top 10 gdp per capita, listed below:
+    Luxembourg    132.37 thousand
+    Ireland       114.58 thousand
+    Norway        101.1 thousand
+    Switzerland   98.77 thousand
+    Singapore     91.1 thousand
+    Qatar         83.89 thousand
+    United States 80.03 thousand
+    Iceland       75.18 thousand
+    Denmark       68.83 thousand
+    Australia     64.96 thousand
+
+# Next I create a copy of the original data as a backup, and go to work on creating a filtered dataset.
+# The steps I took to filter the data set are in the file: 2023-09-07_jennifer_step1_filter_countries.py.
