@@ -1,20 +1,51 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# <h1>Two-levels cross-validation for ANN model<h1>
+
+# Follow our project description two-level cross-validation, 
+# - Outer fold should be separated to train dataset and test dataset.
+# - Inner fold training datasets should be divided to training and validation sets.
+# - In inner fold, we should select the best hidden units to minimize the average validatation errors.
+# - As we have already selected the best hidden units in each group, then compare each other by calculating the Generalization in outer fold.
+# 
+
+# In[54]:
+
+
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
+
+
+# In[55]:
+
+
 import pandas as pd
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
 import numpy as np
-from sklearn.model_selection import KFold
 import matplotlib.pyplot as plt 
 from tqdm import tqdm
 from torch.utils.data import TensorDataset, DataLoader, SubsetRandomSampler
 from sklearn.model_selection import KFold
 
+
+# Load the dataframe from the csv files we stored
+
+# In[56]:
+
+
 train_x = pd.read_csv("/Users/luchengliang/02450_project2/2023-10-05_jennifer_data_preparation/independent_train.csv")
 train_y = pd.read_csv("/Users/luchengliang/02450_project2/2023-10-05_jennifer_data_preparation/dependent_train.csv")
 test_x = pd.read_csv("/Users/luchengliang/02450_project2/2023-10-05_jennifer_data_preparation/independent_test.csv")
 test_y = pd.read_csv("/Users/luchengliang/02450_project2/2023-10-05_jennifer_data_preparation/dependent_test.csv")
+
+
+# To clarify if we used the GPUs (Mac will choose mps and Windows will choose cuda for GPUs) or CPU.
+
+# In[57]:
+
 
 device = (
     "cuda"
@@ -23,6 +54,11 @@ device = (
     if torch.backends.mps.is_available()
     else "cpu"
 )
+print(f"Using {device} device")
+
+
+# In[58]:
+
 
 class ANN_Model(nn.Module):
     def __init__(self, input_dim, hidden_dim, num_hidden_layers):
@@ -48,6 +84,12 @@ class ANN_Model(nn.Module):
             x = torch.relu(layer(x))
         x = self.output_layer(x)
         return x
+    
+
+
+# The weights needed to be reset in each fold. The following function will reset the parameters of the model. It could ensure the model is trained with the initailized randomly weights in order to avoid weight leakage.
+
+# In[59]:
 
 
 def reset_weights(m):
@@ -55,7 +97,10 @@ def reset_weights(m):
         if hasattr(layer, 'reset_parameters'):
             print(f'Reset trainable parameters of layer = {layer}')
             layer.reset_parameters()
-            
+
+
+# In[60]:
+
 
 X = train_x
 y = train_y
@@ -74,10 +119,17 @@ hidden_layers = 1
 
 torch.manual_seed(42)
 
+
+# In[61]:
+
+
 train_Tenx = torch.Tensor(X.to_numpy())
 train_Teny = torch.Tensor(y.to_numpy())
 
 dataset = TensorDataset(train_Tenx, train_Teny)
+
+
+# In[62]:
 
 
 outer_generalization_errors_list = []
@@ -227,7 +279,13 @@ for fold, (train_ids_out, test_ids_out) in enumerate(kfold_1.split(dataset)):
     outer_generalization_errors_list.append(outer_generalization_error)
     best_hidden_units_list.append(best_hidden_unit) 
     print('--------------------------------')
+                
+        
 
-    
+
+# In[64]:
+
+
 print("Best hidden units for each outer-fold in ANN Model:", [f'{x}' for x in best_hidden_units_list])
 print("E^test values for each fold:", [f'{x:.3f}' for x in outer_generalization_errors_list])
+
